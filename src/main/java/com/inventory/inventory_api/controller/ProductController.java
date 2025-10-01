@@ -1,0 +1,42 @@
+package com.inventory.inventory_api.controller;
+
+import com.inventory.inventory_api.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.inventory.inventory_api.entity.Product;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/items")
+public class ProductController {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productRepository.findAll(); // Goes through database to find all instead of storing into a list, and returning list
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(product -> ResponseEntity.ok(product))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        if (productRepository.existsBySku(product.getSku())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        Product savedProduct = productRepository.save(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+    }
+
+}
