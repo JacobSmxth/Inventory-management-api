@@ -1,0 +1,23 @@
+# THIS IS AN AI GENERATED .gitignore FILE
+
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+.classpath
+.project
+.settings/
+
+.vscode/
+
+.DS_Store
+
+*.log
+
+
