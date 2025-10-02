@@ -17,6 +17,7 @@ public class Product {
     private String name;
 
     @NotBlank(message = "SKU is required")
+    @Pattern(regexp = "^[A-Z]{3,6}-[A-Z0-9]{2,6}$", message = "SKU must match the format: XXX-XXX (e.g, LOGI-G502")
     @Column(nullable = false, unique = true)
     private String sku;
 
