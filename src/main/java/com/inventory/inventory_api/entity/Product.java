@@ -33,6 +33,9 @@ public class Product {
     @Column
     private String category;
 
+    @Column
+    private boolean depleting;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -52,12 +55,13 @@ public class Product {
 
     public Product() {}
 
-    public Product(String name, String sku, Integer priceInCents, Integer quantity, String category) {
+    public Product(String name, String sku, Integer priceInCents, Integer quantity, String category, boolean depleting) {
         this.name = name;
         this.sku = sku;
         this.priceInCents = priceInCents;
         this.quantity = quantity;
         this.category = category;
+        this.depleting = depleting;
     }
 
     public Long getId() {
@@ -100,6 +104,13 @@ public class Product {
     }
     public void setCategory(String category) {
         this.category = category.toUpperCase();
+    }
+
+    public boolean getDepleting() {
+        return depleting;
+    }
+    public void setDepleting(boolean depleting) {
+        this.depleting = depleting;
     }
 
     public LocalDateTime getCreatedAt() {

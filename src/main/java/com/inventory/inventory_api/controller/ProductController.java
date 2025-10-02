@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.inventory.inventory_api.entity.Product;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/items")
@@ -18,7 +20,10 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(@RequestParam(required = false) String category) {
+        if (category != null) {
+            return productRepository.findByCategory(category.toUpperCase());
+        }
         return productRepository.findAll(); // Goes through database to find all instead of storing into a list, and returning list
     }
 
@@ -29,6 +34,24 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/low-stock")
+    public List<Product> getLowStockItems(@RequestParam(defaultValue = "5") Integer threshold) {
+        List<Product> lowStockItems = productRepository.findByQuantityLessThan(threshold);
+        List<Product> valid = new ArrayList<>();
+        for(Product product : lowStockItems) {
+            if (product.getDepleting()) {
+                valid.add(product);
+            }
+        }
+        return valid;
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Product> getProductBySku(@RequestParam String sku) {
+        return productRepository.findBySku(sku)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
