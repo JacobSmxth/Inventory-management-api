@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.inventory.inventory_api.entity.Product;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -40,6 +42,27 @@ public class ProductController {
     public Product getProductBySku(@RequestParam String sku) {
         return productRepository.findBySku(sku)
                 .orElseThrow(() -> new ProductNotFoundException(sku));
+    }
+
+    @GetMapping("/stats/total-value")
+    public Map<String, Object> getTotalInventoryValue() {
+        List<Product> allProducts = productRepository.findAll();
+
+        long totalValue = allProducts.stream()
+                .mapToLong(p -> (long) p.getQuantity() * p.getPriceInCents())
+                .sum();
+
+        long totalQuantity = allProducts.stream()
+                .mapToInt(p -> p.getQuantity())
+                .sum();
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("TotalValueCents", totalValue);
+        stats.put("TotalValueDollars", totalValue / 100.0);
+        stats.put("TotalProducts", allProducts.size());
+        stats.put("TotalQuantity", totalQuantity);
+
+        return stats;
     }
 
     @PostMapping
