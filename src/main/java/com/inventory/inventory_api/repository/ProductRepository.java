@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findBySku(String sku);
     List<Product> findByCategory(String category);
-    List<Product> findByQuantityLessThan(Integer quantity);
+    List<Product> findByQuantityLessThanAndDepletingTrue(Integer quantity);
     boolean existsBySku(String sku);
 }

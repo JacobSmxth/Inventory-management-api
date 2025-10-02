@@ -36,14 +36,7 @@ public class ProductController {
 
     @GetMapping("/low-stock")
     public List<Product> getLowStockItems(@RequestParam(defaultValue = "5") Integer threshold) {
-        List<Product> lowStockItems = productRepository.findByQuantityLessThan(threshold);
-        List<Product> valid = new ArrayList<>();
-        for(Product product : lowStockItems) {
-            if (product.getDepleting()) {
-                valid.add(product);
-            }
-        }
-        return valid;
+        return productRepository.findByQuantityLessThanAndDepletingTrue(threshold);
     }
 
     @GetMapping("/search")
