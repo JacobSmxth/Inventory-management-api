@@ -77,6 +77,18 @@ public class ProductController {
        return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/adjust-stock")
+    public Product adjustStock(@PathVariable Long id, @RequestParam Integer amount) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        int newQuantity = product.getQuantity() + amount;
 
+        if (newQuantity < 0) {
+            throw new IllegalArgumentException("Cannot reduce stock below 0. Current: " + product.getQuantity() + ", Attempted adjustment: " + amount);
+        }
+
+        product.setQuantity(newQuantity);
+        return productRepository.save(product);
+    }
 
 }
