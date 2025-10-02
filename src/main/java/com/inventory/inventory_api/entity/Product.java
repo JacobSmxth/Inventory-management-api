@@ -99,7 +99,7 @@ public class Product {
         return category;
     }
     public void setCategory(String category) {
-        this.category = category;
+        this.category = category.toUpperCase();
     }
 
     public LocalDateTime getCreatedAt() {
