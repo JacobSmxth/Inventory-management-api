@@ -2,6 +2,7 @@ package com.inventory.inventory_api.controller;
 
 import com.inventory.inventory_api.exception.ProductNotFoundException;
 import com.inventory.inventory_api.repository.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +67,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
         if (productRepository.existsBySku(product.getSku())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -77,7 +78,7 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+    public Product updateProduct(@PathVariable Long id, @Valid @RequestBody Product productDetails) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
